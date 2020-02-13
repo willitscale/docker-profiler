@@ -1,26 +1,25 @@
 package uk.co.n3tw0rk.profiler.docker;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.ComponentScan;
 
+import java.io.IOException;
+import java.util.concurrent.ThreadPoolExecutor;
+
+@SpringBootApplication
+@ComponentScan(value = {
+        "uk.co.n3tw0rk.profiler.docker.Stats"
+})
 public class Main {
 
-    public static void main(String args[]) throws IOException {
+    private ThreadPoolExecutor threadPoolExecutor;
 
-        Process process = Runtime.getRuntime().exec("docker stats --all");
+    public Main(ThreadPoolExecutor threadPoolExecutor, ) {
 
-        InputStream inputStream = process.getInputStream();
-
-        InputStreamReader isReader = new InputStreamReader(inputStream);
-
-        BufferedReader reader = new BufferedReader(isReader);
-        String str;
-
-        while((str = reader.readLine())!= null){
-            System.out.println(str);
-        }
     }
 
+    public static void main(String[] args) {
+        SpringApplication.run(Main.class, args);
+    }
 }
