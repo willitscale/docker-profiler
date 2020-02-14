@@ -2,6 +2,7 @@ package uk.co.n3tw0rk.profiler.docker.Stats.Usecase;
 
 import com.google.common.base.Strings;
 import org.springframework.stereotype.Component;
+import uk.co.n3tw0rk.profiler.docker.Stats.Models.Container;
 import uk.co.n3tw0rk.profiler.docker.Stats.Models.ContainerStats;
 import uk.co.n3tw0rk.profiler.docker.Stats.Repositories.StatsRepository;
 
@@ -14,7 +15,7 @@ public class StatsParser {
         this.statsRepository = statsRepository;
     }
 
-    public ContainerStats parseStatsLine(String line) {
+    public Container parseStatsLine(String line) {
         if (Strings.isNullOrEmpty(line)) {
             return null;
         }

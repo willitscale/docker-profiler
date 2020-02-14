@@ -3,19 +3,24 @@ package uk.co.n3tw0rk.profiler.docker.Stats.Repositories;
 import com.google.common.collect.Maps;
 import org.springframework.stereotype.Component;
 import uk.co.n3tw0rk.profiler.docker.Stats.Models.ContainerStats;
+import uk.co.n3tw0rk.profiler.docker.Stats.Models.Container;
 
 import java.util.concurrent.ConcurrentMap;
 
 @Component
 public class StatsRepository {
 
-    private ConcurrentMap<String, ContainerStats> containerMap = Maps.newConcurrentMap();
+    private ConcurrentMap<String, Container> containerMap = Maps.newConcurrentMap();
 
     public StatsRepository() {
 
     }
 
-    public ContainerStats getOrCreateStatsContainer(
+    public Container getContainerStats(String id) {
+        return this.containerMap.get(id);
+    }
+
+    public Container getOrCreateStatsContainer(
             String id,
             String name,
             String cpuPercentage,
@@ -25,20 +30,33 @@ public class StatsRepository {
             String blockIo,
             int pids
     ) {
-        ContainerStats containerStats = this.containerMap.get(id);
-        if (null == containerStats) {
-            containerStats = new ContainerStats();
+        Container container = this.containerMap.get(id);
+
+        if (null == container) {
+            container = new Container();
+            container.setId(id);
+            container.setName(name);
+            container.setCurrentContainerStats(new ContainerStats());
         }
 
-        containerStats.setId(id);
-        containerStats.setName(name);
-        containerStats.setCpuPercentage(cpuPercentage);
-        containerStats.setMemoryUsage(memoryUsage);
-        containerStats.setMemoryPercentage(memoryPercentage);
-        containerStats.setNetIo(netIo);
-        containerStats.setBlockIo(blockIo);
-        containerStats.setPids(pids);
+        container.getCurrentContainerStats().setCpuPercentage(cpuPercentage);
+        container.getCurrentContainerStats().setMemoryUsage(memoryUsage);
+        container.getCurrentContainerStats().setMemoryPercentage(memoryPercentage);
+        container.getCurrentContainerStats().setNetIo(netIo);
+        container.getCurrentContainerStats().setBlockIo(blockIo);
+        container.getCurrentContainerStats().setPids(pids);
 
-        return containerStats;
+        try {
+            container.getContainerStatsHistory().put(
+                    "",
+                    (ContainerStats) container.getCurrentContainerStats().clone())
+            ;
+        } catch (CloneNotSupportedException e) {
+            e.printStackTrace();
+        }
+
+        this.containerMap.put(id, container);
+
+        return container;
     }
 }

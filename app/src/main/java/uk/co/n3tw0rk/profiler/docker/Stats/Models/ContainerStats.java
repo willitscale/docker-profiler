@@ -7,13 +7,15 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ContainerStats {
-    private String id;
-    private String name;
+public class ContainerStats implements Cloneable {
     private String cpuPercentage;
     private String memoryUsage;
     private String memoryPercentage;
     private String netIo;
     private String blockIo;
     private int pids;
+
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone();
+    }
 }

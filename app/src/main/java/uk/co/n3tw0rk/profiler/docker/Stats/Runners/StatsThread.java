@@ -1,6 +1,7 @@
 package uk.co.n3tw0rk.profiler.docker.Stats.Runners;
 
-import org.springframework.stereotype.Component;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import uk.co.n3tw0rk.profiler.docker.Stats.Usecase.StatsParser;
 import uk.co.n3tw0rk.profiler.docker.Support.Usecase.Sleeper;
 
@@ -9,7 +10,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
-@Component
+@Service
 public class StatsThread implements Runnable {
 
     private final static String STATS_FORMAT = "{{.ID}}:{{.Name}}:{{.CPUPerc}}:{{.MemUsage}}:{{.MemPerc}}:{{.NetIO}}:{{.BlockIO}}:{{.PIDs}}";
@@ -17,6 +18,7 @@ public class StatsThread implements Runnable {
     private StatsParser statsParser;
     private Sleeper sleeper;
 
+    @Autowired
     public StatsThread(StatsParser statsParser, Sleeper sleeper) {
         this.statsParser = statsParser;
         this.sleeper = sleeper;
