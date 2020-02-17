@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <title>WebSocket Test</title>
+</head>
+
+<body>
+    <script src="stomp.min.js"></script>
+    <script language="javascript" type="text/javascript">
+        var wsUri = "ws://localhost:8080/socket";
+        var client = Stomp.client(wsUri);
+        client.connect({}, function (frame) {
+            console.log('Connected: ' + frame);
+            client.subscribe('/topic/docker/stats', function (greeting) {
+                console.log(greeting);
+            });
+            client.send("/app/stats");
+        });
+    </script>
+</body>
+
+</html>

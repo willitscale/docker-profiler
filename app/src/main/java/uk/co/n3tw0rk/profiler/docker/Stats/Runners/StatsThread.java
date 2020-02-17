@@ -27,9 +27,9 @@ public class StatsThread implements Runnable {
     @Override
     public void run() {
 
-        String command = "docker stats --no-trunc --format \"" + STATS_FORMAT + "\"";
+        String command = "/usr/local/bin/docker stats --no-trunc --format " + STATS_FORMAT;
 
-        while(true) {
+        //while(true) {
             try {
                 Process process = Runtime.getRuntime().exec(command);
                 InputStream inputStream = process.getInputStream();
@@ -46,6 +46,6 @@ public class StatsThread implements Runnable {
             }
 
             this.sleeper.sleep(500);
-        }
+        //}
     }
 }

@@ -1,6 +1,8 @@
 package uk.co.n3tw0rk.profiler.docker.Stats.Repositories;
 
 import com.google.common.collect.Maps;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Component;
 import uk.co.n3tw0rk.profiler.docker.Stats.Models.ContainerStats;
 import uk.co.n3tw0rk.profiler.docker.Stats.Models.Container;
@@ -11,9 +13,11 @@ import java.util.concurrent.ConcurrentMap;
 public class StatsRepository {
 
     private ConcurrentMap<String, Container> containerMap = Maps.newConcurrentMap();
+    private SimpMessagingTemplate simpMessagingTemplate;
 
-    public StatsRepository() {
-
+    @Autowired
+    public StatsRepository(SimpMessagingTemplate simpMessagingTemplate) {
+        this.simpMessagingTemplate = simpMessagingTemplate;
     }
 
     public Container getContainerStats(String id) {
@@ -56,6 +60,8 @@ public class StatsRepository {
         }
 
         this.containerMap.put(id, container);
+
+        this.simpMessagingTemplate.convertAndSend("/topic/docker/stats", container.getCurrentContainerStats());
 
         return container;
     }
