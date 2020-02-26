@@ -4,24 +4,22 @@ import com.google.common.collect.Maps;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Component;
+import uk.co.n3tw0rk.profiler.docker.Containers.Repository.ContainerRepository;
 import uk.co.n3tw0rk.profiler.docker.Stats.Models.ContainerStats;
-import uk.co.n3tw0rk.profiler.docker.Stats.Models.Container;
+import uk.co.n3tw0rk.profiler.docker.Containers.Models.Container;
 
 import java.util.concurrent.ConcurrentMap;
 
 @Component
 public class StatsRepository {
 
-    private ConcurrentMap<String, Container> containerMap = Maps.newConcurrentMap();
     private SimpMessagingTemplate simpMessagingTemplate;
+    private ContainerRepository containerRepository;
 
     @Autowired
-    public StatsRepository(SimpMessagingTemplate simpMessagingTemplate) {
+    public StatsRepository(SimpMessagingTemplate simpMessagingTemplate, ContainerRepository containerRepository) {
         this.simpMessagingTemplate = simpMessagingTemplate;
-    }
-
-    public Container getContainerStats(String id) {
-        return this.containerMap.get(id);
+        this.containerRepository = containerRepository;
     }
 
     public Container getOrCreateStatsContainer(
@@ -34,7 +32,7 @@ public class StatsRepository {
             String blockIo,
             int pids
     ) {
-        Container container = this.containerMap.get(id);
+        Container container = this.containerRepository.getOrCreateContainer(id, name);
 
         if (null == container) {
             container = new Container();
@@ -58,8 +56,6 @@ public class StatsRepository {
         } catch (CloneNotSupportedException e) {
             e.printStackTrace();
         }
-
-        this.containerMap.put(id, container);
 
         this.simpMessagingTemplate.convertAndSend("/topic/docker/stats", container.getCurrentContainerStats());
 

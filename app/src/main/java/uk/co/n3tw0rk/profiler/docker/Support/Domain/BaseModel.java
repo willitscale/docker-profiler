@@ -1,4 +1,4 @@
-package uk.co.n3tw0rk.profiler.docker.Stats.Models;
+package uk.co.n3tw0rk.profiler.docker.Support.Domain;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-class BaseStats {
+public class BaseModel {
     private String id;
     private String name;
 }
