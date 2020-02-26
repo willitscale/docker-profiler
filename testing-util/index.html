@@ -7,14 +7,30 @@
 </head>
 
 <body>
-    <script src="stomp.min.js"></script>
+
+    <div id="docker-stats">
+        <p>CPU <span id="cpuPercentage"></span></p>
+        <p>Memory Usage <span id="memoryUsage"></span></p>
+        <p>Memory <span id="memoryPercentage"></span></p>
+        <p>Net IO <span id="netIo"></span></p>
+        <p>Block IO <span id="blockIo"></span></p>
+        <p>PIDS <span id="pids"></span></p>
+    </div>
+
+    <!--script src="stomp.min.js"></script-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js" integrity="sha256-nkP8cj5xaTdWK/BsZl+57ZCE/Y/i4UNtbNTpgH+6Taw=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+
     <script language="javascript" type="text/javascript">
         var wsUri = "ws://localhost:8080/socket";
         var client = Stomp.client(wsUri);
         client.connect({}, function (frame) {
             console.log('Connected: ' + frame);
             client.subscribe('/topic/docker/stats', function (greeting) {
-                console.log(greeting);
+                let container = JSON.parse(greeting.body);
+                for(let i in container) {
+                    $('#' + i).html(container[i]);
+                }
             });
             client.send("/app/stats");
         });
