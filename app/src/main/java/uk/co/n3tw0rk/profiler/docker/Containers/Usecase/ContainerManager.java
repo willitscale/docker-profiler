@@ -35,9 +35,7 @@ public class ContainerManager {
     }
 
     public void getContainerList() {
-
         String command = "docker container ls --no-trunc --all --format " + formatter.getFormat(FIELDS);
-
         try {
             Process process = Runtime.getRuntime().exec(command);
             InputStream inputStream = process.getInputStream();
@@ -46,13 +44,13 @@ public class ContainerManager {
             String str;
 
             while ((str = reader.readLine()) != null) {
-
-                System.out.println(str);
-
+                this.writeEvent(str);
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
-
+    }
+    
+    private void writeEvent(String event) {
     }
 }
